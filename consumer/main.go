@@ -56,6 +56,11 @@ func handleEvent(event CDCEvent) error {
 	case "c", "u": // create hoặc update
 		doc := event.Payload.After
 		id, _ := doc["id"].(string)
+
+		if doc["status"] == "deleted" {
+			return deleteDocument(id)
+		}
+
 		return indexDocument(id, doc)
 	case "d": // delete
 		doc := event.Payload.Before
